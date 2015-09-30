@@ -136,7 +136,7 @@ public class CheeseballChomper extends ApplicationAdapter implements Application
 		iter = clouds.iterator();
 		while(iter.hasNext()) {
 			Rectangle cloud = iter.next();
-			cloud.y -= 200 * Gdx.graphics.getDeltaTime();
+			cloud.y -= 110 * Gdx.graphics.getDeltaTime();
 			if(cloud.y + 64 < 0) iter.remove();
 
 		}
