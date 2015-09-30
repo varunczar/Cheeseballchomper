@@ -21,6 +21,7 @@ import java.util.Iterator;
 public class CheeseballChomper extends ApplicationAdapter implements ApplicationListener{
 	private Texture dropImage;
 	private Texture bucketImage;
+	private Texture cloudImage;
 	private Sound dropSound;
 	private Music rainMusic;
 	private OrthographicCamera camera;
@@ -28,7 +29,9 @@ public class CheeseballChomper extends ApplicationAdapter implements Application
 
 	private Rectangle bucket;
 	private Array<Rectangle> raindrops;
+	private Array<Rectangle> clouds;
 	private long lastDropTime;
+	private long lastCloudTime;
 
 	private int dropScore = 0;
 	
@@ -42,6 +45,7 @@ public class CheeseballChomper extends ApplicationAdapter implements Application
 		// load the images for the droplet and the bucket, 64x64 pixels each
 		dropImage = new Texture(Gdx.files.internal("cheeseball.png"));
 		bucketImage = new Texture(Gdx.files.internal("alienopeneyed.png"));
+		cloudImage = new Texture(Gdx.files.internal("cloud.png"));
 
 		// load the drop sound effect and the rain background "music"
 		dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
@@ -52,6 +56,7 @@ public class CheeseballChomper extends ApplicationAdapter implements Application
 		//rainMusic.play();
 
 		raindrops = new Array<Rectangle>();
+		clouds = new Array<Rectangle>();
 		spawnRaindrop();
 
 		bucket = new Rectangle();
@@ -80,10 +85,19 @@ public class CheeseballChomper extends ApplicationAdapter implements Application
 		// begin a new batch and draw the bucket and
 		// all drops
 		batch.begin();
+
+
+		for(Rectangle cloud: clouds) {
+			batch.draw(cloudImage, cloud.x, cloud.y);
+		}
 		batch.draw(bucketImage, bucket.x, bucket.y);
+
 		for(Rectangle raindrop: raindrops) {
 			batch.draw(dropImage, raindrop.x, raindrop.y);
 		}
+
+
+
 		batch.end();
 
 		// process user input
@@ -103,6 +117,8 @@ public class CheeseballChomper extends ApplicationAdapter implements Application
 		// check if we need to create a new raindrop
 		if(TimeUtils.nanoTime() - lastDropTime > 1000000000) spawnRaindrop();
 
+		if(TimeUtils.nanoTime() - lastCloudTime > 1001000001) spawnClouds();
+
 		// move the raindrops, remove any that are beneath the bottom edge of
 		// the screen or that hit the bucket. In the later case we play back
 		// a sound effect as well.
@@ -116,6 +132,14 @@ public class CheeseballChomper extends ApplicationAdapter implements Application
 				iter.remove();
 			}
 		}
+
+		iter = clouds.iterator();
+		while(iter.hasNext()) {
+			Rectangle cloud = iter.next();
+			cloud.y -= 200 * Gdx.graphics.getDeltaTime();
+			if(cloud.y + 64 < 0) iter.remove();
+
+		}
 	}
 
 	private void spawnRaindrop() {
@@ -126,6 +150,18 @@ public class CheeseballChomper extends ApplicationAdapter implements Application
 		raindrop.height = 64;
 		raindrops.add(raindrop);
 		lastDropTime = TimeUtils.nanoTime();
+	}
+
+	private void spawnClouds() {
+		Rectangle cloud = new Rectangle();
+		cloud.x = MathUtils.random(0, 480 - 64);
+		cloud.y = 900;
+		cloud.width = 128;
+		cloud.height = 128;
+		if(clouds.size<2) {
+			clouds.add(cloud);
+		}
+		lastCloudTime = TimeUtils.nanoTime();
 	}
 
 	private void addDropScore()
@@ -139,6 +175,7 @@ public class CheeseballChomper extends ApplicationAdapter implements Application
 		dropImage.dispose();
 		bucketImage.dispose();
 		dropSound.dispose();
+		cloudImage.dispose();
 	//	rainMusic.dispose();
 		batch.dispose();
 	}
