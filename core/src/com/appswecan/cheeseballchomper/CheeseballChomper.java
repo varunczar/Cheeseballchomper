@@ -215,6 +215,7 @@ public class CheeseballChomper extends ApplicationAdapter implements Application
 				enemy.y -= 130 * Gdx.graphics.getDeltaTime();
 				if (enemy.y + 64 < 0) iter.remove();
 				Gdx.app.log("MyTag", ""+enemy.x);
+
 				//if(enemy.y>64&&enemy.overlaps(bucket)){
 				if (collides(enemy, bucket)) {
 					Gdx.app.log("enemy.x", ""+enemy.x);
@@ -235,7 +236,7 @@ public class CheeseballChomper extends ApplicationAdapter implements Application
 	private boolean collides(Rectangle enemy, Rectangle alien)
 	{
 		//return (enemy.y>0)&&(enemy.x < bucket.x + (bucket.width/2) && enemy.x + (enemy.width/2) > bucket.x &&enemy.y < bucket.y + bucket.height && enemy.y + enemy.height > bucket.y);
-		return (enemy.y>64)&&(enemy.x-5 < bucket.x + (bucket.width) && enemy.x-5 + (enemy.width) > bucket.x &&enemy.y+5 < bucket.y + (bucket.height) && enemy.y + (enemy.height) > bucket.y);
+		return (enemy.y>64)&&(enemy.x < bucket.x + (bucket.width) && enemy.x + (enemy.width) > bucket.x &&enemy.y+5 < bucket.y + (bucket.height) && enemy.y + (enemy.height) > bucket.y);
 	}
 
 	private void spawnRaindrop() {
@@ -263,8 +264,8 @@ public class CheeseballChomper extends ApplicationAdapter implements Application
 		Rectangle monster = new Rectangle();
 		monster.x = MathUtils.random(0, gameWidth - 64);
 		monster.y = 800;
-		monster.width = 64;
-		monster.height = 64;
+		monster.width = 55;
+		monster.height = 55;
 		if(enemies.size<2) {
 			enemies.add(monster);
 		}
