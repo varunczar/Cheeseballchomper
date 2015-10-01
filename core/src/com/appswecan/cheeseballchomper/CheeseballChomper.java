@@ -19,6 +19,8 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.Iterator;
 
@@ -34,7 +36,7 @@ public class CheeseballChomper extends ApplicationAdapter implements Application
 	private Music rainMusic;
 	private OrthographicCamera camera;
 	private SpriteBatch batch;
-
+	private Viewport viewport;
 	private Rectangle bucket;
 	private Array<Rectangle> raindrops;
 	private Array<Rectangle> clouds;
@@ -63,7 +65,7 @@ public class CheeseballChomper extends ApplicationAdapter implements Application
 	public void create () {
 
 		camera = new OrthographicCamera();
-
+		viewport = new FitViewport(480, 800, camera);
 		gameState = GameState.RUNNING;
 
 		float screenWidth = Gdx.graphics.getWidth();
@@ -72,7 +74,7 @@ public class CheeseballChomper extends ApplicationAdapter implements Application
 		float gameHeight = screenHeight / (screenWidth / gameWidth);
 
 		//camera.setToOrtho(false, 480, 800);
-		camera.setToOrtho(false, gameWidth, gameHeight);
+		//camera.setToOrtho(false, gameWidth, gameHeight);
 		batch = new SpriteBatch();
 
 		// load the images for the droplet and the bucket, 64x64 pixels each
@@ -288,6 +290,12 @@ public class CheeseballChomper extends ApplicationAdapter implements Application
 		cloudImage.dispose();
 	//	rainMusic.dispose();
 		batch.dispose();
+	}
+
+	@Override
+	public void resize(int width, int height)
+	{
+		viewport.update(width, height,true);
 	}
 
 }
