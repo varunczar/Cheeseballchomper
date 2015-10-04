@@ -1,32 +1,45 @@
 package com.appswecan.cheeseballchomper;
 
-import com.appswecan.cheeseballchomper.helper.AssetLoader;
+import com.appswecan.cheeseballchomper.gamescreens.MainMenu;
 import com.appswecan.cheeseballchomper.render.GameRenderer;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 
 public class CheeseballChomper extends Game{
 
-	private Music rainMusic;
-
 	private GameRenderer gameRenderer;
 
+	public SpriteBatch getBatch() {
+		return batch;
+	}
 
+	public void setBatch(SpriteBatch batch) {
+		this.batch = batch;
+	}
+
+	private SpriteBatch batch;
 
 	@Override
 	public void create () {
 
-
-		gameRenderer = new GameRenderer(480,800);
+		batch = new SpriteBatch();
+		Gdx.input.setCatchBackKey(true);
+		//this.setScreen(new GameRenderer(480,800,this));
+		MainMenu mainMenu = new MainMenu(480,800,this);
+		this.gameRenderer = mainMenu.getGameRenderer();
+		this.setScreen(mainMenu);
+		//gameRenderer = new GameRenderer(480,800,this);
 
 	}
 
+
+
 	@Override
 	public void render() {
-		gameRenderer.render();
-
+		//gameRenderer.render(1.0f);
+		super.render();
 	}
 
 
@@ -34,15 +47,17 @@ public class CheeseballChomper extends Game{
 	@Override
 	public void dispose() {
 		super.dispose();
-		gameRenderer.dispose();
-	//	rainMusic.dispose();
+		batch.dispose();
+
+		//gameRenderer.dispose();
 
 	}
 
 	@Override
 	public void resize(int width, int height)
 	{
-		gameRenderer.getViewport().update(width, height, true);
+		super.resize(width,height);
+		//gameRenderer.getViewport().update(width, height, true);
 	}
 
 	@Override
@@ -54,7 +69,8 @@ public class CheeseballChomper extends Game{
 	@Override
 	public void resume() {
 		Gdx.app.log("Resume", "Resume");
-
+		GameRenderer.gameState= GameRenderer.GameState.PAUSE;
 	}
+
 
 }

@@ -1,20 +1,36 @@
 package com.appswecan.cheeseballchomper.render;
 
+import com.appswecan.cheeseballchomper.CheeseballChomper;
 import com.appswecan.cheeseballchomper.gameobjects.Cheeseball;
 import com.appswecan.cheeseballchomper.gameobjects.Cloud;
 import com.appswecan.cheeseballchomper.gameobjects.Hero;
+import com.appswecan.cheeseballchomper.gamescreens.GameOverMenu;
 import com.appswecan.cheeseballchomper.helper.AssetLoader;
 import com.appswecan.cheeseballchomper.helper.LevelDeterminer;
 import com.appswecan.cheeseballchomper.gameobjects.Level;
+import com.appswecan.cheeseballchomper.helper.SaveGameHelper;
+import com.appswecan.cheeseballchomper.helper.Utils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Stack;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -25,11 +41,13 @@ import java.util.Iterator;
 /**
  * Created by Varun on 03/10/2015.
  */
-public class GameRenderer{
+public class GameRenderer implements Screen,InputProcessor{
 
     private OrthographicCamera camera;
 
     private SpriteBatch batch;
+
+    private GameOverMenu gameOverMenu;
 
     private Hero hero;
     private Array<Cheeseball> cheeseballs;
@@ -40,7 +58,7 @@ public class GameRenderer{
 
     private long lastDropTime;
     private long lastCloudTime;
-
+    final CheeseballChomper cheeseballChomper;
     private long lastMonsterOneTime;
     private long lastMonsterTwoTime;
     private long lastMonsterThreeTime;
@@ -58,11 +76,21 @@ public class GameRenderer{
     private int numberOfCheeseBallsConsumed=0;
     private LevelDeterminer levelDeterminer;
 
-    public enum GameState {
+    private TextureAtlas textureAtlas;
+    private Skin skin;
+    private Table table;
+    private TextButton buttonResume, buttonRetry, buttonExit;
+    private Label highScoreLabel;
+    private Stack stack;
+
+
+    private Stage stage;
+
+    public static enum GameState {
         PAUSE, DEAD, RUNNING
     }
 
-    private GameState gameState;
+    public static GameState gameState;
     private int highScore;
 
     public Viewport getViewport() {
@@ -73,21 +101,27 @@ public class GameRenderer{
         this.viewport = viewport;
     }
 
-    public GameRenderer(int gameWidth, int gameHeight) {
+    public GameRenderer(int gameWidth, int gameHeight,final CheeseballChomper cheeseballChomper) {
 
         camera = new OrthographicCamera();
         viewport = new FitViewport(gameWidth, gameHeight, camera);
-        batch = new SpriteBatch();
-        initAssets();
+        this.batch = cheeseballChomper.getBatch();
+        this.cheeseballChomper = cheeseballChomper;
+        this.gameOverMenu = new GameOverMenu(gameWidth,gameHeight,cheeseballChomper,this);
+
+        stage = new Stage(viewport, batch);
+        Gdx.input.setInputProcessor(stage);
+        //initAssets();
         initGameObjects();
     }
 
-    private void initAssets()
+   /* private void initAssets()
     {
         AssetLoader.load();
-    }
+    }*/
 
-    public void render()
+    @Override
+    public void render(float delta)
     {
         // clear the screen with a dark blue color. The
         // arguments to glClearColor are the red, green
@@ -119,8 +153,24 @@ public class GameRenderer{
 
         batch.end();
 
+
+
         if (gameState == GameState.RUNNING) {
+            table.setTouchable(Touchable.disabled);
+            stack.setTouchable(Touchable.disabled);
             runGameLoop();
+        }
+        else if (gameState == GameState.PAUSE) {
+            table.setTouchable(Touchable.enabled);
+            stack.setTouchable(Touchable.enabled);
+            table.setVisible(true);
+            stack.setVisible(true);
+            stage.act(delta);
+            stage.draw();
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.BACK) || Gdx.input.isKeyPressed(Input.Keys.ESCAPE)){
+            gameState=GameState.PAUSE;
         }
     }
 
@@ -150,8 +200,7 @@ public class GameRenderer{
             if (enemy.y + 64 < 0) monsterOneIterator.remove();
 
             if (collides(enemy, hero)) {
-                gameState=GameState.DEAD;
-                AssetLoader.gameOverSound.play();
+                handleDeath();
             }
 
         }
@@ -165,8 +214,7 @@ public class GameRenderer{
             enemy.y -= currentLevel.getMonsterTwoSpeed() * Gdx.graphics.getDeltaTime();
             if (enemy.y + 64 < 0) monsterTwoIterator.remove();
             if (collides(enemy, hero)) {
-                gameState=GameState.DEAD;
-                AssetLoader.gameOverSound.play();
+                handleDeath();
             }
 
         }
@@ -180,8 +228,7 @@ public class GameRenderer{
             enemy.y -= currentLevel.getMonsterThreeSpeed() * Gdx.graphics.getDeltaTime();
             if (enemy.y + 64 < 0) monsterThreeIterator.remove();
             if (collides(enemy, hero)) {
-                gameState=GameState.DEAD;
-                AssetLoader.gameOverSound.play();
+                handleDeath();
             }
 
         }
@@ -206,7 +253,7 @@ public class GameRenderer{
             cheeseball.y -= currentLevel.getCheeseballSpeed() * Gdx.graphics.getDeltaTime();
             if (cheeseball.y + 64 < 0) iter.remove();
             if (cheeseball.overlaps(hero)) {
-                AssetLoader.dropSound.play();
+                AssetLoader.dropSound.play(AssetLoader.VOLUME);
                 addDropScore();
                 iter.remove();
             }
@@ -226,6 +273,7 @@ public class GameRenderer{
     }
 
     private void processHeroMovement() {
+
         // process user input
         if (Gdx.input.isTouched()) {
             Vector3 touchPos = new Vector3();
@@ -389,7 +437,7 @@ public class GameRenderer{
         currentLevel = new Level();
         initGameState();
         hero = new Hero(gameWidth/2-64/2);
-
+        dropScore=0;
         highScore = com.appswecan.cheeseballchomper.helper.SaveGameHelper.loadHighScore();
         cheeseballs = new Array<Cheeseball>();
         clouds = new Array<Cloud>();
@@ -406,11 +454,220 @@ public class GameRenderer{
         gameState = GameState.RUNNING;
         levelDeterminer = new LevelDeterminer();
         currentLevelNumber=1;
-        levelDeterminer.setLevelInformation(1,currentLevel);
+        levelDeterminer.setLevelInformation(1, currentLevel);
     }
 
+    @Override
+    public void resize(int width, int height)
+    {
+        viewport.update(width, height, true);
+    }
+
+    @Override
     public void dispose()
     {
         AssetLoader.dispose();
     }
+
+    @Override
+    public void resume()
+    {
+
+    }
+
+    @Override
+    public void pause()
+    {
+
+    }
+
+    @Override
+    public void show()
+    {
+        Gdx.input.setInputProcessor(stage);
+
+        textureAtlas = AssetLoader.textureAtlas;
+        skin = new Skin(textureAtlas);
+
+        table = new Table(skin);
+        table.setBounds(0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+
+        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.up = skin.getDrawable("buttonup");
+        textButtonStyle.down = skin.getDrawable("buttondown");
+        textButtonStyle.pressedOffsetX = 1;
+        textButtonStyle.pressedOffsetY = -1;
+        textButtonStyle.font = AssetLoader.menuFont;
+
+        buttonResume = new TextButton("RESUME", textButtonStyle);
+        buttonResume.addListener(resumeButtonListener);
+        buttonRetry = new TextButton("RESTART", textButtonStyle);
+        buttonRetry.addListener(restartButtonListener);
+        buttonExit = new TextButton("EXIT", textButtonStyle);
+        buttonExit.addListener(exitButtonListener);
+
+
+        Label.LabelStyle highScoreLabelstyle = new Label.LabelStyle();
+        highScoreLabelstyle.font = AssetLoader.menuFont;
+        highScoreLabel = new Label("HIGH SCORE : "+ SaveGameHelper.loadHighScore(),highScoreLabelstyle);
+        highScoreLabel.setFontScale(0.7f);
+        highScoreLabel.setAlignment(Align.center);
+
+
+        table.add(buttonResume).width(250).pad(20);
+        table.row();
+        table.add(buttonRetry).width(250).pad(20);
+        table.row();
+        table.add(buttonExit).width(250).pad(20);
+        table.row();
+        table.add(highScoreLabel).width(250).pad(20);
+
+        stage.addActor(table);
+
+        stack= Utils.loadVolumeAssets(skin);
+        stage.addActor(stack);
+    }
+
+    private ClickListener exitButtonListener = new ClickListener(){
+        @Override
+        public void clicked (com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+            Gdx.app.exit();
+            /*AssetLoader.disposeMenuFonts();
+            AssetLoader.disposeMenuAssets();*/
+        }
+    };
+
+    private ClickListener resumeButtonListener = new ClickListener()
+    {
+        @Override
+        public void clicked (com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+
+            table.setTouchable(Touchable.disabled);
+            stack.setTouchable(Touchable.disabled);
+            table.setVisible(false);
+            stack.setVisible(false);
+            gameState=GameState.RUNNING;
+          //  playGame();
+        }
+
+    };
+
+    private ClickListener restartButtonListener = new ClickListener()
+    {
+        @Override
+        public void clicked (com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+
+            table.setTouchable(Touchable.disabled);
+            stack.setTouchable(Touchable.disabled);
+            table.setVisible(false);
+            stack.setVisible(false);
+            initGameObjects();
+            gameState=GameState.RUNNING;
+            //  playGame();
+        }
+
+    };
+
+
+    @Override
+    public void hide()
+    {
+
+    }
+
+    public void resetGame()
+    {
+        hero.x=gameWidth/2-64/2;
+        currentLevelNumber=1;
+        dropScore=0;
+        gameState=GameState.RUNNING;
+    }
+
+    private void handleDeath()
+    {
+        gameState=GameState.DEAD;
+        AssetLoader.gameOverSound.play(AssetLoader.VOLUME);
+        this.cheeseballChomper.setScreen(gameOverMenu);
+
+    }
+
+    /** Called when a key was pressed
+     *
+     * @param keycode one of the constants in {@link Input.Keys}
+     * @return whether the input was processed */
+    public boolean keyDown (int keycode)
+    {
+        Gdx.app.log("Back Button ","Pressed");
+        if(keycode == Input.Keys.BACK){
+            // Optional back button handling (e.g. ask for confirmation)
+           Gdx.app.log("Back Button ","Pressed");
+                Gdx.app.exit();
+        }
+        return false;
+
+    }
+
+    /** Called when a key was released
+     *
+     * @param keycode one of the constants in {@link Input.Keys}
+     * @return whether the input was processed */
+    public boolean keyUp (int keycode)
+    {
+        return false;
+    }
+
+
+    /** Called when a key was typed
+     *
+     * @param character The character
+     * @return whether the input was processed */
+    public boolean keyTyped (char character) {
+        return false;
+    }
+
+
+    /** Called when the screen was touched or a mouse button was pressed. The button parameter will be {@link Input.Buttons#LEFT} on iOS.
+     * @param screenX The x coordinate, origin is in the upper left corner
+     * @param screenY The y coordinate, origin is in the upper left corner
+     * @param pointer the pointer for the event.
+     * @param button the button
+     * @return whether the input was processed */
+    public boolean touchDown (int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+
+    /** Called when a finger was lifted or a mouse button was released. The button parameter will be {@link Input.Buttons#LEFT} on iOS.
+     * @param pointer the pointer for the event.
+     * @param button the button
+     * @return whether the input was processed */
+    public boolean touchUp (int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+
+    /** Called when a finger or the mouse was dragged.
+     * @param pointer the pointer for the event.
+     * @return whether the input was processed */
+    public boolean touchDragged (int screenX, int screenY, int pointer) {
+        return false;
+    }
+
+
+    /** Called when the mouse was moved without any buttons being pressed. Will not be called on iOS.
+     * @return whether the input was processed */
+    public boolean mouseMoved (int screenX, int screenY) {
+        return false;
+    }
+
+
+    /** Called when the mouse wheel was scrolled. Will not be called on iOS.
+     * @param amount the scroll amount, -1 or 1 depending on the direction the wheel was scrolled.
+     * @return whether the input was processed. */
+    public boolean scrolled (int amount)
+    {
+        return false;
+    }
+
+
 }

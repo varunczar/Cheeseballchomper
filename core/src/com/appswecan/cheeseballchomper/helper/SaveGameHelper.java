@@ -13,6 +13,7 @@ public class SaveGameHelper {
 
     public static class JsonWorld {
            public int highScore;
+        public float volume;
     }
 
 
@@ -20,9 +21,16 @@ public class SaveGameHelper {
         JsonWorld jWorld = new JsonWorld();
 
         jWorld.highScore = highScore;
-
         Json json = new Json();
         writeFile("game.sav", json.toJson(jWorld));
+    }
+
+    public static void saveVolume() {
+        JsonWorld jWorld = new JsonWorld();
+        jWorld.volume = AssetLoader.VOLUME;
+        Gdx.app.log("Saving volume : ",""+jWorld.volume);
+        Json json = new Json();
+        writeFile("config.sav", json.toJson(jWorld));
     }
 
     public static int loadHighScore() {
@@ -37,6 +45,19 @@ public class SaveGameHelper {
             return highScore;
         }
         return 0;
+    }
+
+    public static float loadVolume() {
+        String save = readFile("config.sav");
+        if (!save.isEmpty()) {
+
+            Json json = new Json();
+            JsonWorld jWorld = json.fromJson(JsonWorld.class, save);
+            Gdx.app.log("Loading volume : ",""+jWorld.volume);
+            return jWorld.volume;
+        }
+        Gdx.app.log("Default volume : ",""+AssetLoader.VOLUME);
+        return AssetLoader.VOLUME;
     }
 
     public static void writeFile(String fileName, String s) {
