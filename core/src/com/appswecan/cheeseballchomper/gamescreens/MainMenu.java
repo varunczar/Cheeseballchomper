@@ -9,11 +9,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
@@ -49,6 +53,7 @@ public class MainMenu implements Screen {
     private TextButton buttonPlay, buttonExit;
     private Label heading;
     private Stack stack;
+    TextureRegion textureRegion;
 
     public GameRenderer getGameRenderer() {
         return gameRenderer;
@@ -85,7 +90,12 @@ public class MainMenu implements Screen {
 
         camera.update();
         batch.setProjectionMatrix(camera.combined);
-
+        batch.begin();
+        if(textureRegion!=null)
+        {
+            batch.draw(textureRegion,10,450);
+        }
+        batch.end();
         stage.act(delta);
         stage.draw();
 
@@ -101,7 +111,7 @@ public class MainMenu implements Screen {
         skin = new Skin(textureAtlas);
 
         table = new Table(skin);
-        table.setBounds(0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+        table.setBounds(0, -80, viewport.getWorldWidth(), viewport.getWorldHeight());
 
         TextButtonStyle textButtonStyle = new TextButtonStyle();
         textButtonStyle.up = skin.getDrawable("buttonup");
@@ -115,8 +125,7 @@ public class MainMenu implements Screen {
         buttonExit = new TextButton("EXIT", textButtonStyle);
         buttonExit.addListener(exitButtonListener);
 
-
-
+         textureRegion = skin.get("ccgamelogo", TextureRegion.class);
 
         LabelStyle highScoreLabelstyle = new LabelStyle();
         highScoreLabelstyle.font = AssetLoader.menuFont;
@@ -125,6 +134,9 @@ public class MainMenu implements Screen {
         heading.setAlignment(Align.center);
 
 
+
+
+        table.row();
         table.add(buttonPlay).width(250).pad(20);
         table.row();
         table.add(buttonExit).width(250).pad(20);
@@ -132,7 +144,6 @@ public class MainMenu implements Screen {
         table.add(heading).width(250).pad(20);
 
         stage.addActor(table);
-
         stack = Utils.loadVolumeAssets(skin);
 
         stage.addActor(stack);

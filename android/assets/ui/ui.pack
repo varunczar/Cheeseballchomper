@@ -1,0 +1,47 @@
+
+ui.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+ccgamelogo
+  rotate: false
+  xy: 0, 0
+  size: 450, 234
+  orig: 450, 234
+  offset: 0, 0
+  index: -1
+button
+  rotate: false
+  xy: 450, 106
+  size: 512, 128
+  orig: 512, 128
+  offset: 0, 0
+  index: -1
+buttondown
+  rotate: false
+  xy: 450, 34
+  size: 150, 72
+  orig: 150, 72
+  offset: 0, 0
+  index: -1
+buttonup
+  rotate: false
+  xy: 600, 34
+  size: 150, 72
+  orig: 150, 72
+  offset: 0, 0
+  index: -1
+volumeoff
+  rotate: false
+  xy: 750, 55
+  size: 64, 51
+  orig: 64, 51
+  offset: 0, 0
+  index: -1
+volumeon
+  rotate: false
+  xy: 814, 55
+  size: 64, 51
+  orig: 64, 51
+  offset: 0, 0
+  index: -1

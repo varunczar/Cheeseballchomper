@@ -89,7 +89,7 @@ public class AssetLoader {
     public static void loadMenuAssets()
     {
 
-       textureAtlas = new TextureAtlas("ui/button.pack");
+       textureAtlas = new TextureAtlas("ui/ui.pack");
 
     }
 
