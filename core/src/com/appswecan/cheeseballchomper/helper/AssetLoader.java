@@ -76,10 +76,10 @@ public class AssetLoader {
     public static void loadFonts()
     {
         if(generator==null) {
-            generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/goofy.ttf"));
+            generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Exo-Black.otf"));
             parameter = new FreeTypeFontParameter();
         }
-        parameter.size = 36;
+        parameter.size = 24;
         parameter.color= Color.valueOf("FFFFFF");
         parameter.borderColor=Color.valueOf("191970");
         parameter.borderWidth=1;
@@ -96,10 +96,10 @@ public class AssetLoader {
     public static void loadMenuFonts()
     {
         if(generator==null) {
-            generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/goofy.ttf"));
+            generator = new FreeTypeFontGenerator(Gdx.files.internal("fonts/Exo-Black.otf"));
             parameter = new FreeTypeFontParameter();
         }
-        parameter.size = 48;
+        parameter.size = 36;
         parameter.color= Color.valueOf("FFFFFF");
         parameter.borderColor=Color.valueOf("000000");
         parameter.borderWidth=2;
