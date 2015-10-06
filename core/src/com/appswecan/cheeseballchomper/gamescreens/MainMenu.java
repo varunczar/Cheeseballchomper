@@ -2,6 +2,7 @@ package com.appswecan.cheeseballchomper.gamescreens;
 
 import com.appswecan.cheeseballchomper.CheeseballChomper;
 import com.appswecan.cheeseballchomper.helper.AssetLoader;
+import com.appswecan.cheeseballchomper.helper.FacebookLogger;
 import com.appswecan.cheeseballchomper.helper.SaveGameHelper;
 import com.appswecan.cheeseballchomper.helper.Utils;
 import com.appswecan.cheeseballchomper.render.GameRenderer;
@@ -156,7 +157,8 @@ public class MainMenu implements Screen {
     private ClickListener exitButtonListener = new ClickListener(){
         @Override
         public void clicked (com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-            Gdx.app.exit();
+           // Gdx.app.exit();
+            FacebookLogger.loginFacebook();
 
         }
     };

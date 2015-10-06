@@ -10,6 +10,6 @@ public class DesktopLauncher {
 		config.title = "Drop";
 		config.width = 480;
 		config.height = 800;
-		new LwjglApplication(new CheeseballChomper(), config);
+		new LwjglApplication(new CheeseballChomper(null), config);
 	}
 }

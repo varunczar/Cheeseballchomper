@@ -55,5 +55,18 @@
             </array>
         </dict>
     </dict>
+	<key>FacebookAppID</key>
+	<string>694373700695185</string>
+	<key>FacebookDisplayName</key>
+	<string>Cheeseball Chomper</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+	<dict>
+	<key>CFBundleURLSchemes</key>
+	<array>
+    <string>fb694373700695185</string>
+</array>
+</dict>
+</array>
 </dict>
 </plist>

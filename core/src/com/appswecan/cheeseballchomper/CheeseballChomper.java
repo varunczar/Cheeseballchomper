@@ -1,6 +1,8 @@
 package com.appswecan.cheeseballchomper;
 
 import com.appswecan.cheeseballchomper.gamescreens.MainMenu;
+import com.appswecan.cheeseballchomper.helper.AdsController;
+import com.appswecan.cheeseballchomper.helper.DummyAdsController;
 import com.appswecan.cheeseballchomper.render.GameRenderer;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -10,6 +12,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class CheeseballChomper extends Game{
 
 	private GameRenderer gameRenderer;
+
+	private AdsController adsController;
 
 	public SpriteBatch getBatch() {
 		return batch;
@@ -21,6 +25,14 @@ public class CheeseballChomper extends Game{
 
 	private SpriteBatch batch;
 
+	public CheeseballChomper(AdsController adsController){
+		if (adsController != null) {
+			this.adsController = adsController;
+		} else {
+			this.adsController = new DummyAdsController();
+		}
+	}
+
 	@Override
 	public void create () {
 
@@ -31,6 +43,7 @@ public class CheeseballChomper extends Game{
 		this.gameRenderer = mainMenu.getGameRenderer();
 		this.setScreen(mainMenu);
 		//gameRenderer = new GameRenderer(480,800,this);
+		adsController.showBannerAd();
 
 	}
 
