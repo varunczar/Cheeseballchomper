@@ -12,6 +12,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
  */
 public class Utils {
 
+    public static enum PUBLISH_STATUS {SUCCESSFULL,ERROR};
+
     public static Stack loadVolumeAssets(Skin skin){
 
         if(AssetLoader.volumeOffButton==null || AssetLoader.volumeOnButton==null) {
@@ -63,4 +65,16 @@ public class Utils {
                 determineVolumeStatus();
             }
     };
+
+    public static String determineStatus(PUBLISH_STATUS status)
+    {
+        if(status== Utils.PUBLISH_STATUS.SUCCESSFULL)
+        {
+           return "High score shared successfully";
+        }
+        else
+        {
+            return "Unable to share high score. Please try again";
+        }
+    }
 }

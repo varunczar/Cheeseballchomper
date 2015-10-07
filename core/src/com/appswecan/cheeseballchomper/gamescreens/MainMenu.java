@@ -3,6 +3,7 @@ package com.appswecan.cheeseballchomper.gamescreens;
 import com.appswecan.cheeseballchomper.CheeseballChomper;
 import com.appswecan.cheeseballchomper.helper.AssetLoader;
 import com.appswecan.cheeseballchomper.helper.FacebookLogger;
+import com.appswecan.cheeseballchomper.helper.Menu;
 import com.appswecan.cheeseballchomper.helper.SaveGameHelper;
 import com.appswecan.cheeseballchomper.helper.Utils;
 import com.appswecan.cheeseballchomper.render.GameRenderer;
@@ -40,7 +41,7 @@ import java.awt.event.InputEvent;
 /**
  * Created by Varun on 04/10/2015.
  */
-public class MainMenu implements Screen {
+public class MainMenu extends GenericMenu implements Screen, Menu {
 
     final CheeseballChomper cheeseballChomper;
     private OrthographicCamera camera;
@@ -53,8 +54,10 @@ public class MainMenu implements Screen {
     private Table table;
     private TextButton buttonPlay, buttonExit;
     private Label heading;
+
     private Stack stack;
     TextureRegion textureRegion;
+
 
     public GameRenderer getGameRenderer() {
         return gameRenderer;
@@ -96,8 +99,16 @@ public class MainMenu implements Screen {
         {
             batch.draw(textureRegion,10,450);
         }
+        if(message !=null)
+        {
+            message.setText(messageText);
+        }
         batch.end();
         stage.act(delta);
+        if(!isActive())
+        {
+            messageText="";
+        }
         stage.draw();
 
 
@@ -112,7 +123,7 @@ public class MainMenu implements Screen {
         skin = new Skin(textureAtlas);
 
         table = new Table(skin);
-        table.setBounds(0, -80, viewport.getWorldWidth(), viewport.getWorldHeight());
+        table.setBounds(0, -100, viewport.getWorldWidth(), viewport.getWorldHeight());
 
         TextButtonStyle textButtonStyle = new TextButtonStyle();
         textButtonStyle.up = skin.getDrawable("buttonup");
@@ -134,6 +145,9 @@ public class MainMenu implements Screen {
         heading.setFontScale(0.7f);
         heading.setAlignment(Align.center);
 
+        message = new Label("",highScoreLabelstyle);
+        message.setFontScale(0.5f);
+        message.setAlignment(Align.center);
 
 
 
@@ -143,6 +157,8 @@ public class MainMenu implements Screen {
         table.add(buttonExit).width(250).pad(20);
         table.row();
         table.add(heading).width(250).pad(20);
+        table.row();
+        table.add(message).width(250).pad(20);
 
         stage.addActor(table);
         stack = Utils.loadVolumeAssets(skin);
@@ -158,7 +174,7 @@ public class MainMenu implements Screen {
         @Override
         public void clicked (com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
            // Gdx.app.exit();
-            FacebookLogger.loginFacebook();
+            postToFacebook();
 
         }
     };
@@ -215,4 +231,6 @@ public class MainMenu implements Screen {
     {
 
     }
+
+
 }

@@ -1,6 +1,11 @@
 package com.appswecan.cheeseballchomper.android;
 
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -12,6 +17,9 @@ import com.appswecan.cheeseballchomper.CheeseballChomper;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class AndroidLauncher extends AndroidApplication implements AdsController{
 
@@ -41,6 +49,20 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
 				ViewGroup.LayoutParams.WRAP_CONTENT);
 		params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		layout.addView(bannerAd, params);
+
+		/*try {
+			PackageInfo info = getPackageManager().getPackageInfo("com.appswecan.cheeseballchomper.android",
+					PackageManager.GET_SIGNATURES);
+			for (Signature signature : info.signatures) {
+				MessageDigest md = MessageDigest.getInstance("SHA");
+				md.update(signature.toByteArray());
+				Log.i("Digest: ", Base64.encodeToString(md.digest(), 0));
+			}
+		} catch (PackageManager.NameNotFoundException e) {
+			Log.e("Test", e.getMessage());
+		} catch (NoSuchAlgorithmException e) {
+			Log.e("Test", e.getMessage());
+		}*/
 
 		setContentView(layout);
 	}

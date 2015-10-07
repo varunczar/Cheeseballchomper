@@ -1,6 +1,7 @@
 package com.appswecan.cheeseballchomper.helper;
 
 import com.appswecan.cheeseballchomper.render.GameRenderer;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import de.tomgrill.gdxfacebook.core.GDXFacebookSystem;
  */
 public class FacebookLogger {
 
-    public static void loginFacebook()
+    public static void postToFacebook(final Menu menu)
     {
         GDXFacebookConfig config = new GDXFacebookConfig();
         config.APP_ID = "694373700695185";
@@ -46,16 +47,17 @@ public class FacebookLogger {
                     @Override
                     public void onSuccess(GDXFacebookGraphResult result) {
                         // Success
+                        menu.displayFacebookPublishStatus(Utils.PUBLISH_STATUS.SUCCESSFULL);
                     }
 
                     @Override
                     public void onError(GDXFacebookError error) {
-                        // Error
+                        menu.displayFacebookPublishStatus(Utils.PUBLISH_STATUS.ERROR);
                     }
 
                     @Override
                     public void onFail(Throwable t) {
-                        // Fail
+                        menu.displayFacebookPublishStatus(Utils.PUBLISH_STATUS.ERROR);
                     }
 
                     @Override
@@ -83,4 +85,6 @@ public class FacebookLogger {
             }
         });
     }
+
+
 }
