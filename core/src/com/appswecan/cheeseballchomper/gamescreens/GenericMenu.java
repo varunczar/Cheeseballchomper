@@ -5,6 +5,7 @@ import com.appswecan.cheeseballchomper.helper.Menu;
 import com.appswecan.cheeseballchomper.helper.Utils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 /**
  * Created by supple on 7/10/2015.
@@ -33,5 +34,23 @@ public abstract class GenericMenu implements Menu{
     public boolean isActive() {
         return (System.currentTimeMillis() - activatedAt) <= DURATION;
     }
+
+    protected ClickListener exitButtonListener = new ClickListener(){
+        @Override
+        public void clicked (com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+            Gdx.app.exit();
+
+        }
+    };
+
+    protected ClickListener facebookPostButtonListener = new ClickListener(){
+        @Override
+        public void clicked (com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
+            messageText="Sharing High score. Please Wait";
+            activatedAt = System.currentTimeMillis();
+            postToFacebook();
+
+        }
+    };
 
 }

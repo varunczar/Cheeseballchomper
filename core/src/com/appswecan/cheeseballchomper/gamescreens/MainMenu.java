@@ -21,6 +21,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -53,6 +54,7 @@ public class MainMenu extends GenericMenu implements Screen, Menu {
     private Skin skin;
     private Table table;
     private TextButton buttonPlay, buttonExit;
+    private ImageButton facebookButton;
     private Label heading;
 
     private Stack stack;
@@ -97,7 +99,7 @@ public class MainMenu extends GenericMenu implements Screen, Menu {
         batch.begin();
         if(textureRegion!=null)
         {
-            batch.draw(textureRegion,10,450);
+            batch.draw(textureRegion,10,520);
         }
         if(message !=null)
         {
@@ -123,7 +125,7 @@ public class MainMenu extends GenericMenu implements Screen, Menu {
         skin = new Skin(textureAtlas);
 
         table = new Table(skin);
-        table.setBounds(0, -100, viewport.getWorldWidth(), viewport.getWorldHeight());
+        table.setBounds(0, -80, viewport.getWorldWidth(), viewport.getWorldHeight());
 
         TextButtonStyle textButtonStyle = new TextButtonStyle();
         textButtonStyle.up = skin.getDrawable("buttonup");
@@ -132,12 +134,21 @@ public class MainMenu extends GenericMenu implements Screen, Menu {
         textButtonStyle.pressedOffsetY = -1;
         textButtonStyle.font = AssetLoader.menuFont;
 
+        ImageButtonStyle imageButtonStyle = new ImageButtonStyle();
+        imageButtonStyle.up = skin.getDrawable("facebook");
+        imageButtonStyle.down = skin.getDrawable("facebook");
+        imageButtonStyle.pressedOffsetX = 1;
+        imageButtonStyle.pressedOffsetY = -1;
+
         buttonPlay = new TextButton("PLAY", textButtonStyle);
         buttonPlay.addListener(playButtonListener);
         buttonExit = new TextButton("EXIT", textButtonStyle);
         buttonExit.addListener(exitButtonListener);
 
-         textureRegion = skin.get("ccgamelogo", TextureRegion.class);
+        textureRegion = skin.get("ccgamelogo", TextureRegion.class);
+
+        facebookButton = new ImageButton(imageButtonStyle);
+        facebookButton.addListener(facebookPostButtonListener);
 
         LabelStyle highScoreLabelstyle = new LabelStyle();
         highScoreLabelstyle.font = AssetLoader.menuFont;
@@ -156,7 +167,9 @@ public class MainMenu extends GenericMenu implements Screen, Menu {
         table.row();
         table.add(buttonExit).width(250).pad(20);
         table.row();
-        table.add(heading).width(250).pad(20);
+        table.add(heading).pad(20);
+        table.row();
+        table.add(facebookButton).pad(5);
         table.row();
         table.add(message).width(250).pad(20);
 
@@ -170,14 +183,7 @@ public class MainMenu extends GenericMenu implements Screen, Menu {
 
     }
 
-    private ClickListener exitButtonListener = new ClickListener(){
-        @Override
-        public void clicked (com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-           // Gdx.app.exit();
-            postToFacebook();
 
-        }
-    };
 
     private ClickListener playButtonListener = new ClickListener()
     {

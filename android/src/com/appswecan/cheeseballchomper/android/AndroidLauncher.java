@@ -50,7 +50,7 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
 		params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		layout.addView(bannerAd, params);
 
-		/*try {
+		try {
 			PackageInfo info = getPackageManager().getPackageInfo("com.appswecan.cheeseballchomper.android",
 					PackageManager.GET_SIGNATURES);
 			for (Signature signature : info.signatures) {
@@ -62,7 +62,7 @@ public class AndroidLauncher extends AndroidApplication implements AdsController
 			Log.e("Test", e.getMessage());
 		} catch (NoSuchAlgorithmException e) {
 			Log.e("Test", e.getMessage());
-		}*/
+		}
 
 		setContentView(layout);
 	}

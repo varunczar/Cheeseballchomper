@@ -40,7 +40,7 @@ public class FacebookLogger {
                 request.putField("message", "My High Score on Cheeseball Chomper is - " + SaveGameHelper.loadHighScore() + ". What's yours?");
                 request.putField("link", "http://www.cheeseballchomper.com");
                 request.putField("picture","http://www.cheeseballchomper.com/images/facebooklogo.png");
-                request.putField("caption", "Download the free game here");
+                request.putField("caption", "Download Cheeseball Chomper for free here");//. The ultimate addictive game for all ages this season.");
 
                 facebook.newGraphRequest(request, new GDXFacebookCallback<GDXFacebookGraphResult>() {
 
