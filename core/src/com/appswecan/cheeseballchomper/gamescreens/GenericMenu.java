@@ -3,6 +3,7 @@ package com.appswecan.cheeseballchomper.gamescreens;
 import com.appswecan.cheeseballchomper.helper.FacebookLogger;
 import com.appswecan.cheeseballchomper.helper.Menu;
 import com.appswecan.cheeseballchomper.helper.Utils;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 
 /**
@@ -20,6 +21,7 @@ public abstract class GenericMenu implements Menu{
     {
         messageText = Utils.determineStatus(status);
         activatedAt = System.currentTimeMillis();
+        Gdx.app.log("Posted ",""+status);
     }
 
     public void postToFacebook()
