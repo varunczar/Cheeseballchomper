@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
@@ -27,7 +28,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 /**
  * Created by Varun on 04/10/2015.
  */
-public class GameOverMenu implements Screen {
+public class GameOverMenu extends GenericMenu implements Screen {
 
     final CheeseballChomper cheeseballChomper;
     final GameRenderer gameRenderer;
@@ -65,7 +66,17 @@ public class GameOverMenu implements Screen {
         Gdx.gl.glClearColor(0.49f, 0.75f, 0.93f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        batch.begin();
+        if(message !=null)
+        {
+            message.setText(messageText);
+        }
+        batch.end();
         stage.act(delta);
+        if(!isActive())
+        {
+            messageText="";
+        }
         stage.draw();
 
         camera.update();
@@ -80,6 +91,9 @@ public class GameOverMenu implements Screen {
 
         textureAtlas = AssetLoader.textureAtlas;
         skin = new Skin(textureAtlas);
+
+        setUpFacebook(skin);
+
 
         table = new Table(skin);
         table.setBounds(0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
@@ -107,6 +121,10 @@ public class GameOverMenu implements Screen {
         gameOver.setFontScale(2f);
         gameOver.setAlignment(Align.center);
 
+        message = new Label("",highScoreLabelstyle);
+        message.setFontScale(0.5f);
+        message.setAlignment(Align.center);
+
         table.add(gameOver).width(250).pad(20);
         table.row();
         table.add(buttonRetry).width(250).pad(20);
@@ -114,6 +132,10 @@ public class GameOverMenu implements Screen {
         table.add(buttonExit).width(250).pad(20);
         table.row();
         table.add(highScore).width(250).pad(20);
+        table.row();
+        table.add(facebookButton).pad(5);
+        table.row();
+        table.add(message).width(250).pad(20);
 
         stage.addActor(table);
 
@@ -123,14 +145,7 @@ public class GameOverMenu implements Screen {
 
     }
 
-    private ClickListener exitButtonListener = new ClickListener(){
-        @Override
-        public void clicked (com.badlogic.gdx.scenes.scene2d.InputEvent event, float x, float y) {
-            Gdx.app.exit();
-            /*AssetLoader.disposeMenuFonts();
-            AssetLoader.disposeMenuAssets();*/
-        }
-    };
+
 
     private ClickListener retryButtonListener = new ClickListener()
     {
@@ -154,7 +169,6 @@ public class GameOverMenu implements Screen {
     @Override
     public void resize(int width, int height)
     {
-        Gdx.app.log("Resize", "tt");
        stage.getViewport().update(width, height, true);
 
     }

@@ -54,7 +54,6 @@ public class MainMenu extends GenericMenu implements Screen, Menu {
     private Skin skin;
     private Table table;
     private TextButton buttonPlay, buttonExit;
-    private ImageButton facebookButton;
     private Label heading;
 
     private Stack stack;
@@ -134,11 +133,7 @@ public class MainMenu extends GenericMenu implements Screen, Menu {
         textButtonStyle.pressedOffsetY = -1;
         textButtonStyle.font = AssetLoader.menuFont;
 
-        ImageButtonStyle imageButtonStyle = new ImageButtonStyle();
-        imageButtonStyle.up = skin.getDrawable("facebook");
-        imageButtonStyle.down = skin.getDrawable("facebook");
-        imageButtonStyle.pressedOffsetX = 1;
-        imageButtonStyle.pressedOffsetY = -1;
+        setUpFacebook(skin);
 
         buttonPlay = new TextButton("PLAY", textButtonStyle);
         buttonPlay.addListener(playButtonListener);
@@ -147,8 +142,7 @@ public class MainMenu extends GenericMenu implements Screen, Menu {
 
         textureRegion = skin.get("ccgamelogo", TextureRegion.class);
 
-        facebookButton = new ImageButton(imageButtonStyle);
-        facebookButton.addListener(facebookPostButtonListener);
+
 
         LabelStyle highScoreLabelstyle = new LabelStyle();
         highScoreLabelstyle.font = AssetLoader.menuFont;

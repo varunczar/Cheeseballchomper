@@ -4,7 +4,9 @@ import com.appswecan.cheeseballchomper.helper.FacebookLogger;
 import com.appswecan.cheeseballchomper.helper.Menu;
 import com.appswecan.cheeseballchomper.helper.Utils;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 /**
@@ -16,6 +18,7 @@ public abstract class GenericMenu implements Menu{
     protected String messageText = "";
     private static final int DURATION = 5000;
     private long activatedAt = Long.MAX_VALUE;
+    protected ImageButton facebookButton;
 
 
     public void displayFacebookPublishStatus(Utils.PUBLISH_STATUS status)
@@ -52,5 +55,16 @@ public abstract class GenericMenu implements Menu{
 
         }
     };
+
+    protected void setUpFacebook(Skin skin)
+    {
+        ImageButton.ImageButtonStyle imageButtonStyle = new ImageButton.ImageButtonStyle();
+        imageButtonStyle.up = skin.getDrawable("facebook");
+        imageButtonStyle.down = skin.getDrawable("facebook");
+        imageButtonStyle.pressedOffsetX = 1;
+        imageButtonStyle.pressedOffsetY = -1;
+        facebookButton = new ImageButton(imageButtonStyle);
+        facebookButton.addListener(facebookPostButtonListener);
+    }
 
 }

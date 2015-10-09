@@ -340,13 +340,9 @@ public class GameRenderer implements Screen,InputProcessor{
 
     private void determineAndSetLevel(int numberOfCheeseBalls)
     {
-        Gdx.app.log("Number of cheeseballs consumed", ""+numberOfCheeseBalls);
         int calculatedLevelNumber = levelDeterminer.determineLevelNumber(numberOfCheeseBalls);
-        Gdx.app.log("Calculated Level", ""+calculatedLevelNumber);
-        Gdx.app.log("Current Level", ""+currentLevelNumber);
         if(calculatedLevelNumber!=currentLevelNumber)
         {
-            Gdx.app.log("Setting info for ",""+calculatedLevelNumber);
             currentLevelNumber=calculatedLevelNumber;
             levelDeterminer.setLevelInformation(currentLevelNumber,currentLevel);
         }
@@ -575,13 +571,6 @@ public class GameRenderer implements Screen,InputProcessor{
 
     }
 
-    public void resetGame()
-    {
-        hero.x=gameWidth/2-64/2;
-        currentLevelNumber=1;
-        dropScore=0;
-        gameState=GameState.RUNNING;
-    }
 
     private void handleDeath()
     {
