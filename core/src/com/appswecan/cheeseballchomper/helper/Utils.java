@@ -26,7 +26,7 @@ public class Utils {
         Stack stack = new Stack();
         stack.add(AssetLoader.volumeOnButton);
         stack.add(AssetLoader.volumeOffButton);
-        stack.setBounds(350,24,128,128);
+        stack.setBounds(350,14,128,128);
 
         return stack;
     }
