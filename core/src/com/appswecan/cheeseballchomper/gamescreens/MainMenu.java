@@ -2,8 +2,6 @@ package com.appswecan.cheeseballchomper.gamescreens;
 
 import com.appswecan.cheeseballchomper.CheeseballChomper;
 import com.appswecan.cheeseballchomper.helper.AssetLoader;
-import com.appswecan.cheeseballchomper.helper.FacebookLogger;
-import com.appswecan.cheeseballchomper.helper.Menu;
 import com.appswecan.cheeseballchomper.helper.SaveGameHelper;
 import com.appswecan.cheeseballchomper.helper.Utils;
 import com.appswecan.cheeseballchomper.render.GameRenderer;
@@ -11,17 +9,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -31,18 +23,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScalingViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-
-import java.awt.event.InputEvent;
 
 /**
  * Created by Varun on 04/10/2015.
  */
-public class MainMenu extends GenericMenu implements Screen, Menu {
+public class MainMenu extends GenericMenu implements Screen {
 
     final CheeseballChomper cheeseballChomper;
     private OrthographicCamera camera;
@@ -100,16 +87,10 @@ public class MainMenu extends GenericMenu implements Screen, Menu {
         {
             batch.draw(textureRegion,10,520);
         }
-        if(message !=null)
-        {
-            message.setText(messageText);
-        }
+
         batch.end();
         stage.act(delta);
-        if(!isActive())
-        {
-            messageText="";
-        }
+
         stage.draw();
 
 
@@ -133,7 +114,6 @@ public class MainMenu extends GenericMenu implements Screen, Menu {
         textButtonStyle.pressedOffsetY = -1;
         textButtonStyle.font = AssetLoader.menuFont;
 
-        setUpFacebook(skin);
 
         buttonPlay = new TextButton("PLAY", textButtonStyle);
         buttonPlay.addListener(playButtonListener);
@@ -150,11 +130,6 @@ public class MainMenu extends GenericMenu implements Screen, Menu {
         heading.setFontScale(0.7f);
         heading.setAlignment(Align.center);
 
-        message = new Label("",highScoreLabelstyle);
-        message.setFontScale(0.5f);
-        message.setAlignment(Align.center);
-
-
 
         table.row();
         table.add(buttonPlay).width(250).pad(20);
@@ -163,9 +138,6 @@ public class MainMenu extends GenericMenu implements Screen, Menu {
         table.row();
         table.add(heading).pad(20);
         table.row();
-        table.add(facebookButton).pad(5);
-        table.row();
-        table.add(message).width(250).pad(20);
 
         stage.addActor(table);
         stack = Utils.loadVolumeAssets(skin);

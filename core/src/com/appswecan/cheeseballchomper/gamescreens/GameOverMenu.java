@@ -67,16 +67,9 @@ public class GameOverMenu extends GenericMenu implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
-        if(message !=null)
-        {
-            message.setText(messageText);
-        }
         batch.end();
         stage.act(delta);
-        if(!isActive())
-        {
-            messageText="";
-        }
+
         stage.draw();
 
         camera.update();
@@ -92,7 +85,6 @@ public class GameOverMenu extends GenericMenu implements Screen {
         textureAtlas = AssetLoader.textureAtlas;
         skin = new Skin(textureAtlas);
 
-        setUpFacebook(skin);
 
 
         table = new Table(skin);
@@ -121,9 +113,6 @@ public class GameOverMenu extends GenericMenu implements Screen {
         gameOver.setFontScale(2f);
         gameOver.setAlignment(Align.center);
 
-        message = new Label("",highScoreLabelstyle);
-        message.setFontScale(0.5f);
-        message.setAlignment(Align.center);
 
         table.add(gameOver).width(250).pad(20);
         table.row();
@@ -133,10 +122,6 @@ public class GameOverMenu extends GenericMenu implements Screen {
         table.row();
         table.add(highScore).width(250).pad(20);
         table.row();
-        table.add(facebookButton).pad(5);
-        table.row();
-        table.add(message).width(250).pad(20);
-
         stage.addActor(table);
 
         stack= Utils.loadVolumeAssets(skin);

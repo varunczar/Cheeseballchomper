@@ -23,7 +23,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class AndroidLauncher extends AndroidApplication implements AdsController{
 
-	private static final String BANNER_AD_UNIT_ID = "ca-app-pub-3940256099942544/6300978111";
+	private static final String BANNER_AD_UNIT_ID = "ca-app-pub-5339282887610359/8550547025";
 
 	private AdView bannerAd;
 
